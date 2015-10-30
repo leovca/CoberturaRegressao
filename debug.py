@@ -1,11 +1,17 @@
 import pexpect
 import re
+import checklines
 
 class Teste:
-    linhas = [33]
+    appDebugPort = 8700;
+    linhas = []
     paradas = []
     jdb = None
     processPid = None
+
+    def __init__(self,arquivos,appMainClass):
+        self.arquivos = arquivos;
+        self.appMainClass = appMainClass;
 
     def main(self):
         self.iniciarApp()
@@ -17,15 +23,20 @@ class Teste:
 
     def bind(self):
         
-        pexpect.run("adb -d forward tcp:8700 jdwp:%s"%(self.processPid))
-        self.jdb = pexpect.spawn('jdb -attach localhost:8700')
+        pexpect.run("adb -d forward tcp:%s jdwp:%s"%(self.appDebugPort,self.processPid))
+        #print "adb -d forward tcp:%s jdwp:%s"%(self.appDebugPort,self.processPid),"\n"
+        self.jdb = pexpect.spawn('jdb -attach localhost:%s'%(self.appDebugPort))
+        #print 'jdb -attach localhost:%s'%(self.appDebugPort),"\n"
 
     def iniciarApp(self):
-        pexpect.run('adb -d shell am start -D -n "com.example.leonan.myapplication/com.example.leonan.myapplication.MainActivity"')
-        retorno = pexpect.run('adb shell ps com.example')
+        pexpect.run('adb -d shell am start -D -n "%s"'%(self.appMainClass))
+        #print 'adb -d shell am start -D -n "%s"'%(self.appMainClass),"\n"
+        package = self.appMainClass.split("/")[0]
+        retorno = pexpect.run("adb shell ps %s"%(package))
+        #print "adb shell ps %s"%(package),"\n"
         retorno = retorno.split(' ')
         self.processPid = int(retorno[35])
-        print "PID: %s"%(self.processPid),"\n"
+        #print "PID: %s"%(self.processPid),"\n"
 
     def relatorio(self):
         print "Debug Finalizado\n"
@@ -38,14 +49,19 @@ class Teste:
         if len(breakpointsFaltantes)==0:
             print "Cobertura de 100% dos breakpoints"
         elif len(breakpointsFaltantes)>0:
-            print "Cobertura de %s % dos breakpoints"%(100*(len(self.linhas)-len(breakpointsFaltantes))/len(self.linhas)),"\n","Breakpoints nao cobertos:",breakpointsFaltantes
+            print "Cobertura de %s dos breakpoints"%(100*(len(self.linhas)-len(breakpointsFaltantes))/len(self.linhas)),"\n","Breakpoints nao cobertos:",breakpointsFaltantes
 
     def definirBreakPoints(self):
         print "Definindo breakpoints\n","*"*10,"\n"
-        for linha in self.linhas:
-            self.jdb.expect(">")
-            self.jdb.sendline("stop in com.example.leonan.myapplication.MainActivity:%s"%(linha));
-            self.jdb.expect("Deferring breakpoint com.example.leonan.myapplication.MainActivity:%s."%(linha))
+
+        for arquivo in self.arquivos:
+            print arquivo.getLinhasModificadas(),"\n"
+            self.linhas = arquivo.getLinhasModificadas()
+            for linha in arquivo.getLinhasModificadas():
+                self.jdb.expect(">")
+                self.jdb.sendline("stop in %s:%s"%(arquivo.getNomeDaClasse(),linha));
+                self.jdb.expect("Deferring breakpoint*")
+
 
     def executar(self):
         self.jdb.expect(">")    
@@ -61,7 +77,3 @@ class Teste:
                 self.jdb.sendline("cont")
             else:
                 return
-
-    
-x = Teste()
-print x.main()

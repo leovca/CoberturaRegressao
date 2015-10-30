@@ -26,7 +26,13 @@ class Arquivo:
         linhasParaRemover =[]
         for linha in linhasSelecionadas:
             x = linecache.getline(self.repo.working_dir+"/"+self.caminhoDoArquivo, linha)
-            if x.startswith("import"):
+
+            #remover iniciandos com import ou linhas vazias, ou definicoes de classe
+            if x.startswith("import") \
+                    or x.strip()=="" \
+                    or x.startswith("public class") \
+                    or x.startswith("class"):
+
                 linhasParaRemover.append(linha)
 
         for remover in linhasParaRemover:

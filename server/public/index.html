@@ -1,0 +1,85 @@
+<!doctype html>
+
+<!-- ASSIGN OUR ANGULAR MODULE -->
+<html ng-app="app">
+<head>
+    <!-- META -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Optimize mobile viewport -->
+
+    <title>ChangeCoverage</title>
+
+    <!-- SCROLLS -->
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css"><!-- load bootstrap -->
+    <style>
+        html                    { overflow-y:scroll; }
+        body                    { padding-top:50px; }
+        #todo-list              { margin-bottom:30px; }
+    </style>
+
+    <!-- SPELLS -->
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script><!-- load jquery -->
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.8/angular.min.js"></script><!-- load angular -->
+    <script src="core.js"></script>
+    
+    <script src="/socket.io/socket.io.js"></script>
+
+</head>
+<!-- SET THE CONTROLLER AND GET ALL TODOS -->
+<body>
+    <div class="container" ng-controller="mainController"> 
+        
+        <hr/>
+        
+        <div class="panel panel-default" >
+          <div class="panel-heading">Aplicações para Teste</div>
+          <div class="panel-body" style="white-space: pre-line">
+            <table class="table table-hover">
+  			<thead>
+  					<tr>
+  						<th>Nome</th>
+  						<th>Repo</th>
+  						<th></th>
+  					</tr>
+  				</thead>
+  				<tbody>
+  					<tr ng-repeat="aplicacao in aplicacoes">  				
+  						<td>{{aplicacao.name}}</td>
+  						<td>{{aplicacao.repoDir}}</td>
+  						<td><button class="btn btn-primary" ng-click="selelecionaApp(aplicacao)">Selecionar</button></td>
+  					</tr>
+  				</tbody>  			  			
+			</table>
+          </div>
+        </div>  
+        
+        <hr/>
+        
+        <div class="panel panel-default">
+          <div class="panel-heading">Casos de Teste : {{application.name}}</div>
+          <div class="panel-body" style="white-space: pre-line">
+            <table class="table table-hover">
+  			<thead>
+  					<tr>
+  						<th>Nome</th>
+  						<th>Descricao</th>
+  						<th>Cobertura</th>
+  						<th></th>
+  					</tr>
+  				</thead>
+  				<tbody>
+  					<tr ng-repeat="test in testcases">  				
+  						<td>{{test.name}}</td>
+  						<td>{{test.description}}</td>
+  						<td>{{test.coverage}}%</td>
+  						<td><button class="btn btn-primary" ng-click="testar($index)">Testar</button></td>
+  						
+  					</tr>
+  				</tbody>  			  			
+			</table>
+          </div>
+        </div>   
+                     
+	</div>
+</body>
+</html>

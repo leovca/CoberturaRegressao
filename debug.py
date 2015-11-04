@@ -9,6 +9,8 @@ class Teste:
     jdb = None
     processPid = None
 
+    debug = False;
+
     def __init__(self,arquivos,appMainClass):
         self.arquivos = arquivos;
         self.appMainClass = appMainClass;
@@ -16,7 +18,7 @@ class Teste:
     def main(self):
         self.iniciarApp()
         self.bind()
-        print "Iniciando debug\n","*"*10,"\n"  
+        if self.debug: print "Iniciando debug\n","*"*10,"\n"
         self.definirBreakPoints();
         self.executar()
         self.relatorio()
@@ -39,23 +41,25 @@ class Teste:
         #print "PID: %s"%(self.processPid),"\n"
 
     def relatorio(self):
-        print "Debug Finalizado\n"
-        print "*"*10,"\n";
-        print "Linhas esperadas:"
-        print self.linhas, "\n"
-        print "Linhas alcancadas:"
-        print self.paradas, "\n"    
+        if self.debug:print "Debug Finalizado\n"
+        if self.debug:print "*"*10,"\n";
+        if self.debug:print "Linhas esperadas:"
+        if self.debug:print self.linhas, "\n"
+        if self.debug:print "Linhas alcancadas:"
+        if self.debug:print self.paradas, "\n"
         breakpointsFaltantes = [val for val  in self.linhas if val not in self.paradas]
         if len(breakpointsFaltantes)==0:
-            print "Cobertura de 100% dos breakpoints"
+            if self.debug:print "Cobertura de 100% dos breakpoints"
         elif len(breakpointsFaltantes)>0:
-            print "Cobertura de %s dos breakpoints"%(100*(len(self.linhas)-len(breakpointsFaltantes))/len(self.linhas)),"\n","Breakpoints nao cobertos:",breakpointsFaltantes
+            if self.debug: print "Cobertura de %s dos breakpoints"%(100*(len(self.linhas)-len(breakpointsFaltantes))/len(self.linhas)),"\n","Breakpoints nao cobertos:",breakpointsFaltantes
+
+        if(self.debug==False): print (100*(len(self.linhas)-len(breakpointsFaltantes))/len(self.linhas))
 
     def definirBreakPoints(self):
-        print "Definindo breakpoints\n","*"*10,"\n"
+        if self.debug:print "Definindo breakpoints\n","*"*10,"\n"
 
         for arquivo in self.arquivos:
-            print arquivo.getLinhasModificadas(),"\n"
+            if self.debug:print arquivo.getLinhasModificadas(),"\n"
             self.linhas = arquivo.getLinhasModificadas()
             for linha in arquivo.getLinhasModificadas():
                 self.jdb.expect(">")
@@ -72,7 +76,7 @@ class Teste:
             if ex==0:
                 output = self.jdb.readline().strip();
                 lineNumber = re.search('line=(.+?) bci', output).group(1)
-                print "Breakpoint: %s"%(lineNumber)
+                if self.debug:print "Breakpoint: %s"%(lineNumber)
                 self.paradas.append(int(lineNumber))
                 self.jdb.sendline("cont")
             else:

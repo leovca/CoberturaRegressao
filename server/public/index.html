@@ -23,40 +23,45 @@
     <script src="core.js"></script>
     
     <script src="/socket.io/socket.io.js"></script>
+	<script src="http://getbootstrap.com/dist/js/bootstrap.min.js"></script>
+
 
 </head>
 <!-- SET THE CONTROLLER AND GET ALL TODOS -->
 <body>
     <div class="container" ng-controller="mainController"> 
-        
+
+		<h3>ChangeCoverage - Session</h3>
+
         <hr/>
-        
-        <div class="panel panel-default" >
-          <div class="panel-heading">Aplicações para Teste</div>
-          <div class="panel-body" style="white-space: pre-line">
-            <table class="table table-hover">
-  			<thead>
-  					<tr>
-  						<th>Nome</th>
-  						<th>Repo</th>
-  						<th></th>
-  					</tr>
-  				</thead>
-  				<tbody>
-  					<tr ng-repeat="aplicacao in aplicacoes">  				
-  						<td>{{aplicacao.name}}</td>
-  						<td>{{aplicacao.repoDir}}</td>
-  						<td><button class="btn btn-primary" ng-click="selelecionaApp(aplicacao)">Selecionar</button></td>
-  					</tr>
-  				</tbody>  			  			
-			</table>
-          </div>
-        </div>  
-        
-        <hr/>
-        
+
+    <div class="btn-group">
+      <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Aplicação: {{application.name}} <span class="caret"></span></button>
+      <ul class="dropdown-menu">
+        <li ng-repeat="aplicacao in aplicacoes"><a href="#" ng-click="selelecionaApp(aplicacao)">{{aplicacao.name}}</a></li>
+      </ul>
+    </div><!-- /btn-group -->
+
+    <div class="btn-group">
+      <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Versão Base: {{application.commitBase | limitTo:10}}<span class="caret"></span></button>
+      <ul class="dropdown-menu">
+        <li ng-repeat="commit in commits"><a href="#" ng-click="selectBase(commit)">{{commit}}</a></li>
+      </ul>
+    </div><!-- /btn-group -->
+
+	<div class="btn-group">
+      <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Nova Versão: {{application.commitAlterado | limitTo : 10}}<span class="caret"></span></button>
+      <ul class="dropdown-menu">
+        <li ng-repeat="commit in commits"><a href="#" ng-click="selectAlterado(commit)">{{commit}}</a></li>
+      </ul>
+    </div><!-- /btn-group -->
+
+
+		<hr>
+
+
         <div class="panel panel-default">
-          <div class="panel-heading">Casos de Teste : {{application.name}} - {{calcCoverage()}}%</div>
+          <div class="panel-heading">Casos de Teste - {{calcCoverage()}}%</div>
           <div class="panel-body" style="white-space: pre-line">
             <table class="table table-hover">
   			<thead>

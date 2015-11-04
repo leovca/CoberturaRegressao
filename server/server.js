@@ -13,6 +13,8 @@
     
 	var adb = require('adbkit')
 
+
+
     // configuration =================
 
 
@@ -26,6 +28,22 @@
     app.get('*', function(req, res) {
         res.sendfile('./public/index.html'); // load the single view file (angular will handle the page changes on the front-end)
     });
+
+
+    app.post("/api/getCommits",function(req,res){
+         var spawn = require('child_process').exec,
+        run = spawn("python ../GitOptions.py "+req.body.repoDir);
+
+		run.stdout.on('data',
+	    		function (data) {
+	        		res.json('data', JSON.parse(data));
+	    		}
+    		)
+
+        run.stderr.on('data', function (data) {
+              console.log('stderr: ' + data);
+            });
+    })
     
     
     io.on('connection', function(socket){

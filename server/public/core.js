@@ -1,7 +1,7 @@
 // public/core.js
 var app = angular.module('app', []);
 
-function mainController($scope, aplicacoes,testcases,socket) {
+function mainController($scope, aplicacoes,testcases,socket,$http) {
     
     
     $scope.aplicacoes = aplicacoes.getAplicaoes();
@@ -14,9 +14,22 @@ function mainController($scope, aplicacoes,testcases,socket) {
 			faltantes:[]}
 
     var testAtual;
+
+    $scope.selectBase = function(commit){
+    	$scope.application.commitBase = commit.split('|')[0]
+    }
+
+    $scope.selectAlterado = function(commit){
+    	$scope.application.commitAlterado = commit.split('|')[0]
+    }
     
     $scope.selelecionaApp = function(application){
     	$scope.application = application;
+
+    	$http.post("/api/getCommits",application).then(function(data){
+    		$scope.commits = data.data
+
+    	})
     }
 
 	function arrayUnique(array) {
@@ -123,9 +136,7 @@ app.factory("aplicacoes",[function(){
 	var aplicacoes = [{
 			appMainClass:"android.cin.ufpe.br.aplicacaoteste/android.cin.ufpe.br.aplicacaoteste.AtivityTeste",
 			repoDir:"~/Desktop/Monografia/AplicacaoTeste",
-			name:"Aplicação Teste",
-			commitBase:"1543b6e5ab47332d82a0e7867a7d1f0ec3d884f9",
-			commitAlterado:"f4553f18140576a00477b41a507f90f666365ded"
+			name:"Aplicação Teste"
 		},
 		{
 			appMainClass:"android.cin.ufpe.br.aplicacaoteste/android.cin.ufpe.br.aplicacaoteste.AtivityTeste",

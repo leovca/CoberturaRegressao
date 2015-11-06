@@ -7,7 +7,9 @@ class GitOptions:
 
     def getCommits(self,repoDir):
         repo = git.Repo(repoDir)
+
         repo.git.pull()
+
         log = repo.git.log('--pretty=format:%H|%cd').split('\n')
         log_2 = []
         for commit in log:

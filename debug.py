@@ -1,6 +1,7 @@
 import pexpect
 import re
 import checklines
+import time
 
 class Teste:
     appDebugPort = 8700;
@@ -24,7 +25,6 @@ class Teste:
         self.relatorio()
 
     def bind(self):
-        
         pexpect.run("adb -d forward tcp:%s jdwp:%s"%(self.appDebugPort,self.processPid))
         if self.debug: print "adb -d forward tcp:%s jdwp:%s"%(self.appDebugPort,self.processPid),"\n"
         self.jdb = pexpect.spawn('jdb -attach localhost:%s'%(self.appDebugPort))
@@ -36,8 +36,8 @@ class Teste:
         package = self.appMainClass.split("/")[0]
         retorno = pexpect.run("adb shell ps %s"%(package))
         if self.debug:print "adb shell ps %s"%(package),"\n"
-        retorno = retorno.split(' ')
-        self.processPid = int(retorno[35])
+        retorno = retorno.split('\n')[1].split(' ')
+        self.processPid = int(retorno[3])
         if self.debug:print "PID: %s"%(self.processPid),"\n"
 
     def relatorio(self):

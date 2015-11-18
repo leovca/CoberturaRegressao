@@ -96,5 +96,7 @@ class Teste:
 
                 #self.paradas.append(int(lineNumber))
                 self.jdb.sendline("cont")
+                # Remove o breakpoint
+                self.jdb.sendline('clear %s:%s' % (arquivo, lineNumber))
             else:
                 return

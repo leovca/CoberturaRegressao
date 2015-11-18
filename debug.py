@@ -34,10 +34,10 @@ class Teste:
         pexpect.run('adb -d shell am start -D -n "%s"'%(self.appMainClass))
         if self.debug:print 'adb -d shell am start -D -n "%s"'%(self.appMainClass),"\n"
         package = self.appMainClass.split("/")[0]
-        retorno = pexpect.run("adb shell ps %s"%(package))
-        if self.debug:print "adb shell ps %s"%(package),"\n"
-        retorno = retorno.split('\n')[1].split(' ')
-        self.processPid = int(retorno[3])
+        retorno = pexpect.run("adb shell ps | grep %s" %(package))
+        if self.debug:print "adb shell ps | grep %s "%(package),"\n"
+        retorno = retorno.split()
+        self.processPid = retorno[1]
         if self.debug:print "PID: %s"%(self.processPid),"\n"
 
     def relatorio(self):

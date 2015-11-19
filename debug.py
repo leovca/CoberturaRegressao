@@ -1,20 +1,22 @@
 import pexpect
 import re
 import checklines
-import time
+import random
 
 class Teste:
-    appDebugPort = 8700;
+    appDebugPort = random.randrange(8500,8700);
     linhas = []
     paradas = []
     jdb = None
     processPid = None
+    sessionDir = None
 
     debug = False;
 
-    def __init__(self,arquivos,appMainClass):
+    def __init__(self,arquivos,appMainClass,sessionDir):
         self.arquivos = arquivos;
         self.appMainClass = appMainClass;
+        self.sessionDir = sessionDir
 
     def main(self):
         self.iniciarApp()
@@ -27,8 +29,8 @@ class Teste:
     def bind(self):
         pexpect.run("adb -d forward tcp:%s jdwp:%s"%(self.appDebugPort,self.processPid))
         if self.debug: print "adb -d forward tcp:%s jdwp:%s"%(self.appDebugPort,self.processPid),"\n"
-        self.jdb = pexpect.spawn('jdb -attach localhost:%s'%(self.appDebugPort))
-        if self.debug:print 'jdb -attach localhost:%s'%(self.appDebugPort),"\n"
+        self.jdb = pexpect.spawn('jdb -attach localhost:%s -J-Duser.home=%s'%(self.appDebugPort,self.sessionDir))
+        if self.debug:print 'jdb -attach localhost:%s jdb -J-Duser.home=%s'%(self.appDebugPort,self.sessionDir),"\n"
 
     def iniciarApp(self):
         pexpect.run('adb -d shell am start -D -n "%s"'%(self.appMainClass))
@@ -72,10 +74,10 @@ class Teste:
         for arquivo in self.arquivos:
             if self.debug:print self.arquivos[arquivo].getNomeDaClasse(),":",self.arquivos[arquivo].getLinhasModificadas(),"\n"
             self.linhas+=(self.arquivos[arquivo].getEsperadas())
-            for linha in self.arquivos[arquivo].getLinhasModificadas():
+            '''for linha in self.arquivos[arquivo].getLinhasModificadas():
                 self.jdb.expect(">",timeout=10)
                 self.jdb.sendline("stop in %s:%s"%(self.arquivos[arquivo].getNomeDaClasse(),linha));
-                self.jdb.expect("Deferring breakpoint*",timeout=10)
+                self.jdb.expect("Deferring breakpoint*",timeout=10)'''
 
 
     def executar(self):
@@ -84,19 +86,25 @@ class Teste:
             
         while True:
             ex = self.jdb.expect(["Breakpoint hit: *","The application exited","The application has been disconnected"],timeout=100)
-            if ex==0:
-                output = self.jdb.readline().strip();
-                lineNumber = re.search('line=(.+?) bci', output).group(1)
-                className = re.search('", (.+?) ()', output).group(1)
+            output = self.jdb.readline().strip();
+            if ex==0 and output:
+                try:
+                    lineNumber = re.search('line=(.+?) bci', output).group(1)
+                    className = re.search('", (.+?) ()', output).group(1)
 
-                for arquivo in self.arquivos:
-                    if arquivo in output:
-                        self.arquivos[arquivo].addParada(lineNumber)
-                        if self.debug:print "Breakpoint: %s:%s"%(arquivo,lineNumber)
+                    for arquivo in self.arquivos:
+                        if arquivo in output:
+                            self.arquivos[arquivo].addParada(lineNumber)
+                            if self.debug:print "Breakpoint: %s:%s"%(arquivo,lineNumber)
 
-                #self.paradas.append(int(lineNumber))
-                self.jdb.sendline("cont")
-                # Remove o breakpoint
-                self.jdb.sendline('clear %s:%s' % (arquivo, lineNumber))
+                    # Remove o breakpoint
+                    self.jdb.sendline('clear %s:%s' % (arquivo, lineNumber))
+
+                    #self.paradas.append(int(lineNumber))
+                    self.jdb.sendline("cont")
+                except Exception as inst:
+                    print "\n","*"*10,"Erro","\n",output,"\n",;
+                    raise inst
+
             else:
                 return

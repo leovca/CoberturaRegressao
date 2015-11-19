@@ -3,7 +3,7 @@ __author__ = 'leonan'
 from checklines import GitCheck
 from debug import Teste
 import sys
-
+from JDBUtils import JDBUtils
 
 appMainClass= "android.cin.ufpe.br.aplicacaoteste/android.cin.ufpe.br.aplicacaoteste.AtivityTeste"
 
@@ -20,5 +20,8 @@ commitAlterado = sys.argv[4]
 
 arquivos = GitCheck().getArquivos(repoDir,commitBase,commitAlterado)
 
-execucao = Teste(arquivos,appMainClass)
+
+sessionDir = JDBUtils().gerarArquivoIni(arquivos,None)
+
+execucao = Teste(arquivos,appMainClass,sessionDir)
 execucao.main()

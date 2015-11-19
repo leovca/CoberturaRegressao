@@ -24,18 +24,16 @@ class Teste:
         self.relatorio()
 
     def bind(self):
-        
         pexpect.run("adb -d forward tcp:%s jdwp:%s"%(self.appDebugPort,self.processPid))
         if self.debug: print "adb -d forward tcp:%s jdwp:%s"%(self.appDebugPort,self.processPid),"\n"
         self.jdb = pexpect.spawn('jdb -attach localhost:%s'%(self.appDebugPort))
-        if self.debug: print 'jdb -attach localhost:%s'%(self.appDebugPort),"\n"
+        if self.debug:print 'jdb -attach localhost:%s'%(self.appDebugPort),"\n"
 
     def iniciarApp(self):
         pexpect.run('adb -d shell am start -D -n "%s"'%(self.appMainClass))
         if self.debug:print 'adb -d shell am start -D -n "%s"'%(self.appMainClass),"\n"
         package = self.appMainClass.split("/")[0]
         retorno = pexpect.run("adb shell ps | grep %s" %(package))
-        #adb shell ps | grep %s | awk '{print $2}'" %(package)
         if self.debug:print "adb shell ps | grep %s "%(package),"\n"
         retorno = retorno.split()
         self.processPid = retorno[1]
@@ -97,5 +95,7 @@ class Teste:
 
                 #self.paradas.append(int(lineNumber))
                 self.jdb.sendline("cont")
+                # Remove o breakpoint
+                self.jdb.sendline('clear %s:%s' % (arquivo, lineNumber))
             else:
                 return

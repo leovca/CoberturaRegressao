@@ -36,6 +36,7 @@
 
 		run.stdout.on('data',
 	    		function (data) {
+	    		    console.log(data)
 	        		res.json('data', JSON.parse(data));
 	    		}
     		)
@@ -43,6 +44,7 @@
         run.stderr.on('data', function (data) {
               console.log('stderr: ' + data);
             });
+
     })
     
     

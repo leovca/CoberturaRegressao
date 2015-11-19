@@ -16,11 +16,11 @@ function mainController($scope, aplicacoes,testcases,socket,$http) {
     var testAtual;
 
     $scope.selectBase = function(commit){
-    	$scope.application.commitBase = commit.split('|')[0]
+    	$scope.application.commitBase = commit.split('+')[0]
     }
 
     $scope.selectAlterado = function(commit){
-    	$scope.application.commitAlterado = commit.split('|')[0]
+    	$scope.application.commitAlterado = commit.split('+')[0]
     }
     
     $scope.selelecionaApp = function(application){
@@ -144,9 +144,9 @@ app.factory("aplicacoes",[function(){
 			name:"Galeria"
 		},
 		{
-			appMainClass:"android.cin.ufpe.br.aplicacaoteste/android.cin.ufpe.br.aplicacaoteste.AtivityTeste",
-			repoDir:"~/Desktop/Monografia/AplicacaoTeste",
-			name:"Camera"
+			appMainClass:"com.motorola.camera/com.motorola.camera.Camera",
+			repoDir:"~/Desktop/Monografia/repo_moto/MotCamera",
+			name:"Moto Camera"
 		}	
 	]
 	

@@ -28,7 +28,7 @@ class Teste:
         pexpect.run("adb -d forward tcp:%s jdwp:%s"%(self.appDebugPort,self.processPid))
         if self.debug: print "adb -d forward tcp:%s jdwp:%s"%(self.appDebugPort,self.processPid),"\n"
         self.jdb = pexpect.spawn('jdb -attach localhost:%s'%(self.appDebugPort))
-        if self.debug:'jdb -attach localhost:%s'%(self.appDebugPort),"\n"
+        if self.debug:print 'jdb -attach localhost:%s'%(self.appDebugPort),"\n"
 
     def iniciarApp(self):
         pexpect.run('adb -d shell am start -D -n "%s"'%(self.appMainClass))

@@ -9,9 +9,6 @@ import time
 
 class JDBUtils:
 
-
-
-
     def gerarArquivoIni(self,arquivos, destino):
         #if debug:print "Gerando Breakpoints breakpoints\n","*"*10,"\n"
 

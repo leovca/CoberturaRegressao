@@ -6,6 +6,22 @@
     var morgan = require('morgan');             // log requests to the console (express4)
     var bodyParser = require('body-parser');    // pull information from HTML POST (express4)
     var methodOverride = require('method-override'); // simulate DELETE and PUT (express4)
+
+    var mongoose = require('mongoose');
+    var MongoUrl = 'mongodb://localhost:27017/changeCoverage';
+    mongoose.connect(MongoUrl);
+
+    var Application = mongoose.model('Application', {name: String, appMainClass: String, repoDir: String});
+
+//    var x = new Application({name:"Aplicação Teste",appMainClass:"android.cin.ufpe.br.aplicacaoteste/android.cin.ufpe.br.aplicacaoteste.AtivityTeste",repoDir:"~/Desktop/Monografia/AplicacaoTeste"})
+//    x.save(function (err, userObj) {
+//      if (err) {
+//        console.log(err);
+//      } else {
+//        console.log('saved successfully:', userObj);
+//      }
+//    });
+
     
     var http = require('http').Server(app);
 	var io = require('socket.io')(http);
@@ -25,10 +41,20 @@
     app.use(bodyParser.json({ type: 'application/vnd.api+json' })); // parse application/vnd.api+json as json
     app.use(methodOverride());
    
-    app.get('*', function(req, res) {
+    app.get('/', function(req, res) {
         res.sendfile('./public/index.html'); // load the single view file (angular will handle the page changes on the front-end)
     });
 
+    app.get("/api/application",function(req,res){
+        Application.find(function(err,applications){
+            res.json('data',applications)
+        })
+    })
+    app.get("/api/application/:id",function(req,res){
+        Application.findById(req.params.id,function(err,applications){
+            res.json('data',applications)
+        })
+    })
 
     app.post("/api/getCommits",function(req,res){
          var spawn = require('child_process').exec,

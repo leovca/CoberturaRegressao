@@ -59,9 +59,16 @@
             var spawn = require('child_process').exec,
             run = spawn("python ../run.py "+data.appMainClass+" "+data.repoDir+" "+data.commitBase+" "+data.commitAlterado);
 
+
+            var resposta = ""
+
+            run.on("exit",function(){
+                io.emit('data', resposta);
+            })
+
 			run.stdout.on('data',
 	    		function (data) {
-	        		io.emit('data', data);
+	        		resposta = resposta+data
 	    		}
     		)
 

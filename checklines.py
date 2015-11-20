@@ -15,7 +15,7 @@ class GitCheck:
         diff = base.diff(other=alterado,create_patch=True,unified=0)
         for arquivo in diff:
             filename = ntpath.basename(arquivo.a_path)
-            if(filename.endswith(".java")):
+            if(filename.endswith(".java") and not "Kpi" in filename):
                 arquivo = Arquivo(arquivo,repo)
                 arquivosParaVerificacao[str(arquivo.getNomeDaClasse())]=arquivo
         return arquivosParaVerificacao

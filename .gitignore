@@ -1,7 +1,7 @@
 /MotCamera.apk
 /server/node_modules
+/.idea
 /.idea/*
-/sessions
 *.pyc
-/.idea/
+/server/sessions
 /.idea/Monografia.iml

@@ -19,7 +19,7 @@
         <td>{{app.name}}</td>
         <td>
             <a ui-sref="applications.edit({appID:app._id})" class="btn btn-xs btn-primary"><i class="fa fa-edit fa-fw"></i></a>
-            <a class="btn btn-xs btn-danger"><i class="fa fa-remove fa-fw"></i></a>
+            <a ng-click="applications.remove(app)" class="btn btn-xs btn-danger"><i class="fa fa-remove fa-fw"></i></a>
         </td>
     </tr>
     </tbody>

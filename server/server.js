@@ -6,33 +6,14 @@
     var morgan = require('morgan');             // log requests to the console (express4)
     var bodyParser = require('body-parser');    // pull information from HTML POST (express4)
     var methodOverride = require('method-override'); // simulate DELETE and PUT (express4)
-
-    var mongoose = require('mongoose');
-    var MongoUrl = 'mongodb://localhost:27017/changeCoverage';
-    mongoose.connect(MongoUrl);
-
-    var Application = mongoose.model('Application', {name: String, appMainClass: String, repoDir: String});
-
-//    var x = new Application({name:"Aplicação Teste",appMainClass:"android.cin.ufpe.br.aplicacaoteste/android.cin.ufpe.br.aplicacaoteste.AtivityTeste",repoDir:"~/Desktop/Monografia/AplicacaoTeste"})
-//    x.save(function (err, userObj) {
-//      if (err) {
-//        console.log(err);
-//      } else {
-//        console.log('saved successfully:', userObj);
-//      }
-//    });
-
-    
+    var mongoose = require('mongoose');    
+    var database = require('./config/database');    
     var http = require('http').Server(app);
 	var io = require('socket.io')(http);
-    
-    
 	var adb = require('adbkit')
 
-
-
     // configuration =================
-
+    mongoose.connect(database.url);     
 
     app.use(express.static(__dirname + '/public'));                 // set the static files location /public/img will be /img for users
     app.use(morgan('dev'));                                         // log every request to the console
@@ -45,35 +26,29 @@
         res.sendfile('./public/index.html'); // load the single view file (angular will handle the page changes on the front-end)
     });
 
-    app.get("/api/application",function(req,res){
-        Application.find(function(err,applications){
-            res.json('data',applications)
-        })
-    })
-    app.get("/api/application/:id",function(req,res){
-        Application.findById(req.params.id,function(err,applications){
-            res.json('data',applications)
-        })
-    })
+    // Controllers
+    require("./controllers/ApplicationsController.js")(app)
+    require("./controllers/TestCaseController.js")(app)
 
-    app.post("/api/getCommits",function(req,res){
+     app.post("/api/getCommits",function(req,res){
          var spawn = require('child_process').exec,
         run = spawn("python ../GitOptions.py "+req.body.repoDir);
 
-		run.stdout.on('data',
-	    		function (data) {
-	    		    console.log(data)
-	        		res.json('data', JSON.parse(data));
-	    		}
-    		)
+        run.stdout.on('data',
+                function (data) {
+                    console.log(data)
+                    res.json('data', JSON.parse(data));
+                }
+            )
 
         run.stderr.on('data', function (data) {
               console.log('stderr: ' + data);
             });
 
     })
-    
-    
+
+
+    //Websocket    
     io.on('connection', function(socket){
 	  	console.log('a user connected');
 	  	socket.on('disconnect', function(){
@@ -106,7 +81,7 @@
 
 });
     
-
-http.listen(8080, function(){
-  console.log('listening on *:8080');
-});
+    //listen
+    http.listen(8080, function(){
+      console.log('listening on *:8080');
+    });

@@ -1,0 +1,61 @@
+<div class="row">
+    <div class="col-lg-12">
+        <h1>Session</h1>
+    </div>
+    <!-- /.col-lg-12 -->
+</div>
+
+
+<div>     
+
+    <div class="btn-group">
+      <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Aplicação: {{application.name}} <span class="caret"></span></button>
+      <ul class="dropdown-menu">
+        <li ng-repeat="aplicacao in aplicacoes"><a href="javascript:void(0)" ng-click="selelecionaApp(aplicacao)">{{aplicacao.name}}</a></li>
+      </ul>
+    </div><!-- /btn-group -->
+
+    <div class="btn-group">
+      <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Versão Base: {{application.commitBase | limitTo:8}}<span class="caret"></span></button>
+      <ul class="dropdown-menu">
+        <li ng-repeat="commit in commits"><a href="javascript:void(0)" ng-click="selectBase(commit)">{{commit}}</a></li>
+      </ul>
+    </div><!-- /btn-group -->
+
+	<div class="btn-group">
+      <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Nova Versão: {{application.commitAlterado | limitTo : 10}}<span class="caret"></span></button>
+      <ul class="dropdown-menu">
+        <li ng-repeat="commit in commits"><a href="javascript:void(0)" ng-click="selectAlterado(commit)">{{commit}}</a></li>
+      </ul>
+    </div><!-- /btn-group -->
+
+
+		<hr>
+
+
+        <div class="panel panel-default">
+          <div class="panel-heading">Casos de Teste - {{calcCoverage()}}%</div>
+          <div class="panel-body" style="white-space: pre-line">
+            <table class="table table-hover">
+  			<thead>
+  					<tr>
+  						<th>Nome</th>
+  						<th>Descricao</th>
+  						<th>Cobertura</th>
+  						<th></th>
+  					</tr>
+  				</thead>
+  				<tbody>
+  					<tr ng-repeat="test in testcases">  				
+  						<td>{{test.name}}</td>
+  						<td>{{test.description}}</td>
+  						<td>{{test.coverage}}%</td>
+  						<td><button class="btn btn-primary" ng-click="testar($index)">Testar</button></td>
+  						
+  					</tr>
+  				</tbody>  			  			
+			</table>
+          </div>
+        </div>   
+                     
+	</div>

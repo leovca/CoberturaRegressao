@@ -17,22 +17,22 @@
                                     <form role="form">
                                         <div class="form-group">
                                             <label>Name</label>
-                                            <input class="form-control" ng-model="application.name">
+                                            <input class="form-control" ng-model="fe.app.name">
                                             <p class="help-block">Name of application.</p>
                                         </div>
 
                                         <div class="form-group">
                                             <label>Start Activity</label>
-                                            <input class="form-control" ng-model="application.appMainClass"> <p class="help-block">Start activity name.</p>
+                                            <input class="form-control" ng-model="fe.app.appMainClass"> <p class="help-block">Start activity name.</p>
                                         </div>
 
                                         <div class="form-group">
                                             <label>RepoDir</label>
-                                            <input class="form-control" ng-model="application.repoDir">
+                                            <input class="form-control" ng-model="fe.app.repoDir">
                                             <p class="help-block" >Repository dir.</p>
                                         </div>
 
-                                        <button type="submit" class="btn btn-default">Save</button>
+                                        <button type="button" ng-click="fe.save()" class="btn btn-default">Save</button>
                                         <button type="reset" class="btn btn-default">Cancel</button>
                                     </form>
                                 </div>

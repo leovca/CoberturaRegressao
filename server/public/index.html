@@ -285,7 +285,12 @@
                         <li>
                             <a ui-sref="applications.list"><i class="fa fa-android fa-fw"></i> Applications</a>
                         </li>
-
+                        <li>
+                            <a ui-sref="testcases.list"><i class="fa fa-location-arrow fa-fw"></i> TestCases</a>
+                        </li>
+                        <li>
+                            <a ui-sref="sessions"><i class="fa fa-check fa-fw"></i> Sessions</a>
+                        </li>
                     </ul>
                 </div>
                 <!-- /.sidebar-collapse -->
@@ -318,7 +323,7 @@
     <!-- Custom Theme JavaScript -->
     <!--<script src="/dist/js/sb-admin-2.js"></script>-->
 
-    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.8/angular.min.js"></script><!-- load angular -->
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script><!-- load angular -->
     <script src="js/libs/ui.router.js"></script>
 
     <script src="js/app/app.module.js"></script>
@@ -331,6 +336,15 @@
     <script src="js/app/applications/applications.controller.js"></script>
     <script src="js/app/applications/application.js"></script>
     <script src="js/app/applications/form.application.controller.js"></script>
+
+
+    <script src="js/app/testcases/testcases.routes.js"></script>
+    <script src="js/app/testcases/testcases.controller.js"></script>
+    <script src="js/app/testcases/testcases.js"></script>
+    <script src="js/app/testcases/form.testcase.controller.js"></script>
+
+    <script src="js/app/session/sessions.controller.js"></script>
+    <script src="js/app/session/session.router.js"></script>
 
     <script src="/socket.io/socket.io.js"></script>
 

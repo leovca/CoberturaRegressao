@@ -29,13 +29,18 @@
             url:"/new",
             templateUrl:"js/app/applications/application.form.html",
             controller:"FormApplicationController",
-            controllerAs:"application"
+            controllerAs:"fe",
+            resolve:{
+                app:['ApplicationDataService','$stateParams',function applicationsList(ApplicationDataService,$stateParams){
+                    return ApplicationDataService.getNew()
+                }]
+            }
         })
         .state('applications.edit',{
             url:"/{appID}",
             templateUrl:"js/app/applications/application.form.html",
             controller:"FormApplicationController",
-            controllerAs:"application",
+            controllerAs:"fe",
             resolve:{
                 app:['ApplicationDataService','$stateParams',function applicationsList(ApplicationDataService,$stateParams){
                     return ApplicationDataService.get($stateParams.appID)

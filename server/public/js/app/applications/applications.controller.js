@@ -10,8 +10,6 @@
 
         var application = this;
         application.applicationList  = applicationsList;
-
-
         application.remove = remove;
 
         ///////////

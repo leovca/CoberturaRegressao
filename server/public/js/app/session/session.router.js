@@ -12,7 +12,13 @@
         $stateProvider.state('sessions',{
             url:"/session",
             templateUrl:"js/app/session/index.html",
-            controller:"SessionsController"
+            controller:"SessionsController",
+            controllerAs: "session",
+            resolve:{
+                applicationsList:['ApplicationDataService',function applicationsList(ApplicationDataService){
+                    return ApplicationDataService.getAll()
+                }]
+            }
         })
 
     }

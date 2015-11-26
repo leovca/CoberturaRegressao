@@ -6,14 +6,23 @@
     var morgan = require('morgan');             // log requests to the console (express4)
     var bodyParser = require('body-parser');    // pull information from HTML POST (express4)
     var methodOverride = require('method-override'); // simulate DELETE and PUT (express4)
-    var mongoose = require('mongoose');    
+    var mongoose = require('mongoose');
+    var uriUtil = require('mongodb-uri');
     var database = require('./config/database');    
     var http = require('http').Server(app);
 	var io = require('socket.io')(http);
 	var adb = require('adbkit')
 
-    // configuration =================
-    mongoose.connect(database.url);     
+
+    var mongooseUri = uriUtil.formatMongoose(database.url);
+    mongoose.connect(mongooseUri, database.options);
+    var dbConnection = mongoose.connection;
+    dbConnection.on('error', console.error.bind(console, 'connection error:'));
+
+    dbConnection.once('open', function() {
+      // Wait for the database connection to establish, then start the app.
+    });
+
 
     app.use(express.static(__dirname + '/public'));                 // set the static files location /public/img will be /img for users
     app.use(morgan('dev'));                                         // log every request to the console

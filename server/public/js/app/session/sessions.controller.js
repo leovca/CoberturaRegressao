@@ -4,41 +4,39 @@
     angular.module("app").
         controller("SessionsController",SessionsController)
 
-    SessionsController.$inject = ['$scope','aplicacoes','testcases','socket','$http']
+    SessionsController.$inject = ['$scope','applicationsList','testcases','socket','$http']
 
-    function SessionsController($scope, aplicacoes,testcases,socket,$http) {
+    function SessionsController($scope, applicationsList,testcases,socket,$http) {
+
+        var session = this;
+        session.applicationsList = applicationsList
+
+        console.log(session)
+        $scope.testcases = testcases.getTestCases();
+
+        $scope.resultados=
+                {esperadas:[],
+                alcancadas:[],
+                faltantes:[]}
+
+        var testAtual;
+
+        $scope.selectBase = function(commit){
+            $scope.application.commitBase = commit.split('+')[0]
+        }
     
+        $scope.selectAlterado = function(commit){
+            $scope.application.commitAlterado = commit.split('+')[0]
+        }
 
-        console.log(testcases)
+        $scope.selelecionaApp = function(application){
+            $scope.application = application;
 
-    
-    $scope.aplicacoes = aplicacoes.getAplicaoes();
-    $scope.testcases = testcases.getTestCases();
+            $http.post("/api/getCommits",application).then(function(data){
+                $scope.commits = data.data
 
-
-    $scope.resultados=
-            {esperadas:[],
-            alcancadas:[],
-            faltantes:[]}
-
-    var testAtual;
-
-    $scope.selectBase = function(commit){
-        $scope.application.commitBase = commit.split('+')[0]
-    }
-
-    $scope.selectAlterado = function(commit){
-        $scope.application.commitAlterado = commit.split('+')[0]
-    }
-    
-    $scope.selelecionaApp = function(application){
-        $scope.application = application;
-
-        $http.post("/api/getCommits",application).then(function(data){
-            $scope.commits = data.data
-
-        })
-    }
+            })
+        }
 
     function arrayUnique(array) {
         var a = array.concat();

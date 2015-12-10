@@ -5,19 +5,36 @@ angular.module('app', ['ui.router']);
 angular.module('app').factory("testcases",[function(){
 	
 	var testcases = [
-		{
-			name:"Teste case 1",
-			description:"Clique no botão 1, a messagem botão 1 deve aparecer, Clique no botão 2, a menssagem botao 2 deve aparecer"						
-		},
-		{
-			name:"Teste case 2",
-			description:"Clique no botão 1, a messagem botão 1 deve aparecer,Clique no botão 3, a messagem botão 3 deve aparecer"						
-		},
-		{
-			name:"Teste case 3",
-			description:"Clique no botão 1, a messagem botão 1 deve aparecer,Clique no botão 3, a messagem botão 3 deve aparecer, click na opçõa de configurações"						
-		}
-	]
+	{name:"MCA-120230"},
+	{name:"MCA-119930"},
+	{name:"MCA-120231"},
+	{name:"MCA-119964"},
+	{name:"MCA-120111"},
+	{name:"MCA-120175"},
+	{name:"MCA-120452"},
+	{name:"MCA-120453"},
+	{name:"MCA-120223"},
+	{name:"MCA-120227"},
+	{name:"MCA-120221"},
+	{name:"MCA-120226"},
+	{name:"MCA-120168"},
+	{name:"MCA-120171"},
+	{name:"MCA-119959"},
+	{name:"MCA-120187"},
+	{name:"MCA-120176"},
+	{name:"MCA-119933"},
+	{name:"MCA-120454"},
+	{name:"MCA-120237"},
+	{name:"MCA-120229"},
+	{name:"MCA-120493"},
+	{name:"MCA-120492"},
+	{name:"MCA-120491"},
+	{name:"MCA-120451"},
+	{name:"MCA-120220"},
+	{name:"MCA-119943"},
+	{name:"MCA-120495"},
+	{name:"MCA-120497"}
+]
 	
 	return {
 		getTestCases:function (){return testcases}

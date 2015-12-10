@@ -76,4 +76,5 @@ class Arquivo:
                     or linha.strip().startswith("public class") \
                     or linha.strip().startswith("class") \
                     or linha.strip()=="}" or linha.strip()=="{" \
-                    or linha.strip().startswith("/**") or linha.strip().startswith("*")
+                    or linha.strip().startswith("/**") or linha.strip().startswith("*") \
+                    or linha.strip().startswith("@")

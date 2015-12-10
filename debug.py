@@ -2,6 +2,7 @@ import pexpect
 import re
 import checklines
 import random
+import time
 
 class Teste:
     appDebugPort = random.randrange(8500,8700);
@@ -83,28 +84,64 @@ class Teste:
     def executar(self):
         self.jdb.expect(">",timeout=10)
         #self.jdb.sendline("run");
-            
         while True:
-            ex = self.jdb.expect(["Breakpoint hit: *","The application exited","The application has been disconnected"],timeout=100)
-            output = self.jdb.readline().strip();
-            if ex==0 and output:
-                try:
-                    lineNumber = re.search('line=(.+?) bci', output).group(1)
-                    className = re.search('", (.+?) ()', output).group(1)
+            try:
+                ex = self.jdb.expect(["Breakpoint hit: *"
+                                    ,"The application exited"
+                                    ,"The application has been disconnected"
+                                    ,"> >"
+                                    ,"Nothing suspended."
+                                    ,'thread=*']
+                    ,timeout=300)
+                output = self.jdb.readline().strip();
+                if ex in [0] and output:
+                    try:
+                        threadName = re.search('thread=(.+?)",', output).group(1)
+                        lineNumber = re.search('line=(.+?) bci', output).group(1)
+                        className = re.search('", (.+?) ()', output).group(1)
 
-                    for arquivo in self.arquivos:
-                        if arquivo in output:
-                            self.arquivos[arquivo].addParada(lineNumber)
-                            if self.debug:print "Breakpoint: %s:%s"%(arquivo,lineNumber)
+                        for arquivo in self.arquivos:
+                            if arquivo in output:
+                                self.arquivos[arquivo].addParada(lineNumber)
+                                if self.debug:print "Breakpoint: %s:%s"%(arquivo,lineNumber)
 
-                    # Remove o breakpoint
-                    self.jdb.sendline('clear %s:%s' % (arquivo, lineNumber))
+                        # espera aparecer o main[1]
+                        self.jdb.expect('(%s)*'%(threadName))
+                        
+                        # Remove o breakpoint
+                        self.jdb.sendline('clear %s:%s' % (arquivo, lineNumber))
 
+                        #self.paradas.append(int(lineNumber))
+                        self.jdb.sendline("cont")
+                    except Exception as inst:
+                        #print "\n\n","*"*10,"ERRO","*"*10,"\n\n"
+                        #print "[%s]:"%(ex),output,"\n\n"
+                        #print "|",self.jdb.before, self.jdb.after,"|"
+                        #print "\n\n","*"*10,"ERRO","*"*10,"\n\n"
+                        raise inst
+                elif ex in [5]:
+                    threadName = re.search('(.+?)",', output).group(1)    
+                    # espera aparecer o main[1]
+                    self.jdb.expect('(%s)*'%(threadName))     
                     #self.paradas.append(int(lineNumber))
-                    self.jdb.sendline("cont")
-                except Exception as inst:
-                    print "\n","*"*10,"Erro","\n",output,"\n",;
-                    raise inst
+                    self.jdb.sendline("cont")           
 
-            else:
-                return
+                elif ex in [3,4]:                    
+                    continue;
+                elif ex in [1,2]:
+                    #if  self.debug:                        
+                        #print "\n\n","*"*10,"FIM","*"*10,"\n\n"
+                        #print "[%s]:"%(ex),output,"\n\n"
+                        #print self.jdb.before, self.jdb.after
+                        #print "\n\n","*"*10,"FIM","*"*10,"\n\n"
+
+                    #time.sleep(1000)
+                    return
+            except Exception as inst:
+                #print "\n","@"*10,"Erro","\n",
+                #print "\n","$"*10,"\n",
+                #print "|",self.jdb.before, self.jdb.after,"|"
+                #print "\n","%"*10,"\n",
+                #self.jdb.readline().strip(),"\n",;
+                #print "\n","-"*10,"\n", 
+                raise inst

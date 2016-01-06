@@ -3,5 +3,6 @@
 /.idea
 /.idea/*
 *.pyc
+/sessions
 /server/sessions
 /.idea/Monografia.iml

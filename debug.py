@@ -8,6 +8,7 @@ class Teste:
     appDebugPort = random.randrange(8500,8700);
     linhas = []
     paradas = []
+    ignoradas = []
     jdb = None
     processPid = None
     sessionDir = None
@@ -49,7 +50,18 @@ class Teste:
         for arquivo in self.arquivos:
             paradas+=self.arquivos[arquivo].getBreakPoints()
 
+        #remove linhas ignoradas        
+        #print "\n\n" ,"AA"*20,"\n"
+        #print len(self.linhas),"-",len(self.ignoradas)        
+        self.linhas = list(set(self.linhas)-set(self.ignoradas))
+        #print "-",len(self.linhas)
+        #print "\n\n" ,"AA"*20,"\n"
+
+
         breakpointsFaltantes = [val for val  in self.linhas if val not in paradas]
+
+        #self.linhas = list(set(self.linhas))
+        paradas = list(set(paradas))
 
 
         if self.debug:print "Debug Finalizado\n"
@@ -58,14 +70,17 @@ class Teste:
         if self.debug:print self.linhas, "\n"
         if self.debug:print "Linhas alcancadas:"
         if self.debug:print paradas, "\n"
+        if self.debug:print "Ignoradas:"
+        if self.debug:print self.ignoradas, "\n"
+
 
         if len(breakpointsFaltantes)==0:
             if self.debug:print "Cobertura de 100% dos breakpoints"
         elif len(breakpointsFaltantes)>0:
-            if self.debug: print "Cobertura de %s dos breakpoints"%(100*(len(self.linhas)-len(breakpointsFaltantes))/len(self.linhas)),"\n","Breakpoints nao cobertos:",breakpointsFaltantes
+            if self.debug: print "Cobertura de %s dos breakpoints"%(100*len(paradas)/len(self.linhas)),"\n","Breakpoints nao cobertos:",breakpointsFaltantes
 
         if(self.debug==False):
-            coverage = (100*(len(self.linhas)-len(breakpointsFaltantes))/len(self.linhas))
+            coverage = (100*float(len(paradas))/float(len(self.linhas)))
             print "{'coverage': %s,'esperadas': %s,'alcancadas': %s,'faltantes': %s}"%(coverage,self.linhas,paradas,breakpointsFaltantes)
             #print (100*(len(self.linhas)-len(breakpointsFaltantes))/len(self.linhas))
 
@@ -91,7 +106,8 @@ class Teste:
                                     ,"The application has been disconnected"
                                     ,"> >"
                                     ,"Nothing suspended."
-                                    ,'thread=*']
+                                    ,'thread=*'
+                                    ,'Unable to set*']
                     ,timeout=300)
                 output = self.jdb.readline().strip();
                 if ex in [0] and output:
@@ -125,7 +141,10 @@ class Teste:
                     self.jdb.expect('(%s)*'%(threadName))     
                     #self.paradas.append(int(lineNumber))
                     self.jdb.sendline("cont")           
-
+                elif ex in [6]:
+                    classNameAndLine =  re.search(' breakpoint (.+?) :', output).group(1)
+                    if self.debug:print "Ignorando **",classNameAndLine
+                    self.ignoradas.append(classNameAndLine.strip())
                 elif ex in [3,4]:                    
                     continue;
                 elif ex in [1,2]:

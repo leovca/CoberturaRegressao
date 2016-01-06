@@ -72,20 +72,22 @@ function replaceAll(str, find, replace) {
 
                 $scope.resultados.esperadas =[]
                 $scope.resultados.alcancadas = []
-                $scope.resultados.faltantes = []
 
         var listaTests = testcases.getTestCases();
 
+        console.log("###############")
         for(var i=0;i<listaTests.length;i++){
-            if(listaTests[i].results!=undefined){
-                $scope.resultados.esperadas = arrayUnique($scope.resultados.esperadas.concat(listaTests[i].results.esperadas))
+            if(listaTests[i].results!=undefined){                
+                console.log($scope.resultados.alcancadas)
+                console.log(listaTests[i].results.alcancadas)
+                $scope.resultados.esperadas = arrayUnique($scope.resultados.esperadas.concat(listaTests[i].results.esperadas))                
                 $scope.resultados.alcancadas = arrayUnique($scope.resultados.alcancadas.concat(listaTests[i].results.alcancadas))
-                $scope.resultados.faltantes = arr_diff($scope.resultados.esperadas,$scope.resultados.alcancadas)
+                console.log($scope.resultados.alcancadas)
             }
         }
+        console.log("###############")
 
-        $scope.resultados.coverage = (($scope.resultados.esperadas.length-$scope.resultados.faltantes.length)*100)/$scope.resultados.esperadas.length
-
+        $scope.resultados.coverage = (($scope.resultados.alcancadas.length)*100)/$scope.resultados.esperadas.length
         return $scope.resultados.coverage
 
     }
@@ -105,6 +107,7 @@ function replaceAll(str, find, replace) {
         testAtual.coverage = data.coverage
         testAtual.results = data;
         console.log(data)
+        $scope.calcCoverage()
         
     });
     
